@@ -1,6 +1,6 @@
 <div class="container">
   <mat-card class="form-card">
-    <form class="form" [formGroup]="engineerForm" (ngSubmit)="onSubmit()">
+    <form #userForm="ngForm" class="form" [formGroup]="engineerForm" (ngSubmit)="onSubmit()">
       <mat-card-title class="form-title">Frontend Engineer Form</mat-card-title>
   
       <mat-form-field class="form-field" appearance="fill">
@@ -26,9 +26,9 @@
       
       <mat-form-field class="form-field" appearance="fill">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email" type="email">
+        <input matInput formControlName="email" type="email" placeholder="sample@example.com">
         <mat-error *ngIf="engineerForm.get('email')?.hasError('required')">Enter a valid email</mat-error>
-        <mat-error *ngIf="engineerForm.get('email')?.hasError('exists')">Email already exists</mat-error>
+        <mat-error *ngIf="engineerForm.get('email')?.hasError('emailTaken')">Email already exists</mat-error>
       </mat-form-field>
   
       <mat-form-field class="form-field" appearance="fill">
@@ -74,14 +74,17 @@
 
       <button 
         class="submit-btn" 
-        [class.submitted]="isSubmitted"
         mat-raised-button 
         type="submit" 
         color="primary" 
         [disabled]="!engineerForm.valid || isSubmitted" >
-        {{ isSubmitted ? 'Submitted' : 'Submit' }}
-        <mat-icon *ngIf="isSubmitted">check_circle</mat-icon>
-      </button>     
+        Submit
+      </button>
+
+      <div *ngIf="isSubmitted" class="success-message">
+        Thank you, your form was submitted!
+      </div>
+           
     </form>
   </mat-card>
 </div>

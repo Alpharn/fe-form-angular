@@ -41,20 +41,25 @@
   margin-bottom: 20px;
 }
 
+.remove-icon {
+  cursor: pointer;
+  
+  &:hover {
+    color: red;
+  }
+}
+
 .submit-btn {
   width: 240px;
   align-self: center;
   font-size: 16px;
   font-weight: 600;
+}
 
-  &.submitted:disabled {
-    color: #FFF;
-    background-color: rgb(17, 233, 17);
-  }
-
-  .remove-icon  {
-    order: 2;
-    margin-left: 6px;
-    color: white;
-  }
+.success-message {
+  text-align: center;
+  color: green;
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 20px;
 }
