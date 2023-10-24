@@ -59,7 +59,13 @@ export class AppComponent implements OnInit, OnDestroy {
       framework: ['', Validators.required],
       frameworkVersion: [{value: '', disabled: true}, Validators.required],
       email: ['', [Validators.required, Validators.email], [this.emailAsyncValidator(this.userService)]],
-      hobbies: this.formBuilder.array([this.formBuilder.control('', [Validators.required, Validators.minLength(4), Validators.maxLength(20)])])
+      hobbies: this.formBuilder.array([
+        this.formBuilder.control('', [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(20)
+        ])
+      ])
     });
   }
 
@@ -123,9 +129,9 @@ export class AppComponent implements OnInit, OnDestroy {
       if (!control.value) {
         return null;
       }
-      const birthDate = new Date(control.value).getTime();
-      const currentDate = Date.now();
-      const age = Math.floor((currentDate - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
+      const birthYear = new Date(control.value).getFullYear();
+      const currentYear = new Date().getFullYear();
+      const age = currentYear - birthYear;
 
       if (age < min || age > max) {
         return {'ageRange': true};
