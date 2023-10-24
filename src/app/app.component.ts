@@ -16,6 +16,12 @@ import { map, catchError, delay, tap, takeUntil } from 'rxjs/operators';
 
 import { UserService } from './user.service';
 
+const nameValidators = (): ValidatorFn[] => [
+  Validators.required,
+  Validators.minLength(4),
+  Validators.maxLength(20)
+];
+
 /**
  * AppComponent serves as the primary component for the `fe-form` application.
  * This component provides an interface for collecting and submitting user information.
@@ -53,18 +59,14 @@ export class AppComponent implements OnInit, OnDestroy {
   /** Initialize the form controls and set up validation rules */
   ngOnInit(): void {
     this.engineerForm = this.formBuilder.group({
-      firstName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
-      lastName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
+      firstName: ['', nameValidators()],
+      lastName: ['', nameValidators()],
       dateOfBirth: ['', [Validators.required, this.ageValidator(18, 100)]],
       framework: ['', Validators.required],
       frameworkVersion: [{value: '', disabled: true}, Validators.required],
       email: ['', [Validators.required, Validators.email], [this.emailAsyncValidator(this.userService)]],
       hobbies: this.formBuilder.array([
-        this.formBuilder.control('', [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(20)
-        ])
+        this.formBuilder.control('', nameValidators())
       ])
     });
   }
@@ -81,11 +83,7 @@ export class AppComponent implements OnInit, OnDestroy {
   
   /** Add new hobby control to the hobbies FormArray */
   addHobby(): void {
-    const hobby = new FormControl('', [
-      Validators.required, 
-      Validators.minLength(4), 
-      Validators.maxLength(20)
-    ]);
+    const hobby = new FormControl('', nameValidators());
     this.hobbies.push(hobby);
   }
 
