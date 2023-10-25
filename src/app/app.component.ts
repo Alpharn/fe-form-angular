@@ -152,15 +152,11 @@ export class AppComponent implements OnInit, OnDestroy {
   /** Handle form submission. If form is valid, the user's data is submitted */  
   onSubmit(): void {
     if (this.engineerForm.valid) {
-      // const dob = new Date(this.engineerForm.get('dateOfBirth')?.value);
-      // this.engineerForm.patchValue({
-      //   dateOfBirth: `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`
-      // });
       const dob = this.engineerForm.get('dateOfBirth')?.value;
-    const formattedDate = this.datePipe.transform(dob, 'yyyy-MM-dd');
-    this.engineerForm.patchValue({
+      const formattedDate = this.datePipe.transform(dob, 'yyyy-MM-dd');
+      this.engineerForm.patchValue({
       dateOfBirth: formattedDate
-    });
+      });
   
       this.userService.addUser(this.engineerForm.value).pipe(
         tap(() => this.isSubmitted = true),
