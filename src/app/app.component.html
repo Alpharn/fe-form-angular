@@ -52,9 +52,7 @@
       <mat-form-field class="form-field" appearance="fill">
         <mat-label>FE Technology Version</mat-label>
         <mat-select formControlName="frameworkVersion">
-          <mat-option *ngFor="
-            let version of frameworkVersions[engineerForm.get('framework')?.value]" [value]="version">{{ version }}
-          </mat-option>
+          <mat-option *ngFor="let version of frameworkVersion" [value]="version">{{ version }}</mat-option>
         </mat-select>
       </mat-form-field>
   

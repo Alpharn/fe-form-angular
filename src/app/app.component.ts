@@ -11,8 +11,8 @@ import {
   AsyncValidatorFn, 
   ValidationErrors 
 } from "@angular/forms";
-import { Observable, of, Subject } from 'rxjs';
-import { map, catchError, delay, tap, takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { map, catchError, tap, takeUntil, switchMap } from 'rxjs/operators';
 
 import { UserService } from './user.service';
 
@@ -69,6 +69,18 @@ export class AppComponent implements OnInit, OnDestroy {
         this.formBuilder.control('', nameValidators())
       ])
     });
+  }
+
+  /**
+   * Getter to retrieve the current versions associated with the selected framework.
+   * 
+   * @returns {string[]} - An array of version strings corresponding to the currently selected framework. 
+   *                       If no framework is selected or if there's an error accessing the versions, 
+   *                       it returns an empty array.
+   */
+  get frameworkVersion(): string[] {
+    const framework = this.engineerForm.get('framework')?.value;
+    return this.frameworkVersions[framework] || [];
   }
 
   /** Enable framework versions input */
@@ -138,30 +150,25 @@ export class AppComponent implements OnInit, OnDestroy {
     };
   }
 
-  /** Handle form submission. If form is valid, the user's data is submitted */
+  /** Handle form submission. If form is valid, the user's data is submitted */  
   onSubmit(): void {
     if (this.engineerForm.valid) {
       const dob = new Date(this.engineerForm.get('dateOfBirth')?.value);
       this.engineerForm.patchValue({
         dateOfBirth: `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`
       });
-
-        this.userService.addUser(this.engineerForm.value).pipe(
-            takeUntil(this.destroy$)
-        ).subscribe({
-            next: () => {
-                this.isSubmitted = true; 
-                of(null).pipe(
-                    delay(3000),
-                    tap(() => {
-                        this.isSubmitted = false;
-                        this.formReference?.resetForm();
-                        this.hobbies.clear();
-                    }),
-                    takeUntil(this.destroy$)
-                ).subscribe();
-            }
-        });
+  
+      this.userService.addUser(this.engineerForm.value).pipe(
+        tap(() => this.isSubmitted = true),
+        switchMap(() => timer(3000).pipe(
+          tap(() => {
+            this.isSubmitted = false;
+            this.formReference?.resetForm();
+            this.hobbies.clear();
+          })
+        )),
+        takeUntil(this.destroy$)
+      ).subscribe();
     }
   }
   
