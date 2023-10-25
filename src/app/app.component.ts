@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { DatePipe } from "@angular/common";
 import { 
   FormGroup, 
   FormBuilder, 
@@ -54,7 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
     vue: ['3.3.1', '5.2.1', '5.1.3'],
   };
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService) {}
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private datePipe: DatePipe) {}
    
   /** Initialize the form controls and set up validation rules */
   ngOnInit(): void {
@@ -74,9 +75,7 @@ export class AppComponent implements OnInit, OnDestroy {
   /**
    * Getter to retrieve the current versions associated with the selected framework.
    * 
-   * @returns {string[]} - An array of version strings corresponding to the currently selected framework. 
-   *                       If no framework is selected or if there's an error accessing the versions, 
-   *                       it returns an empty array.
+   * @returns {string[]} - An array of version strings corresponding to the currently selected framework.                     
    */
   get frameworkVersion(): string[] {
     const framework = this.engineerForm.get('framework')?.value;
@@ -153,10 +152,15 @@ export class AppComponent implements OnInit, OnDestroy {
   /** Handle form submission. If form is valid, the user's data is submitted */  
   onSubmit(): void {
     if (this.engineerForm.valid) {
-      const dob = new Date(this.engineerForm.get('dateOfBirth')?.value);
-      this.engineerForm.patchValue({
-        dateOfBirth: `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`
-      });
+      // const dob = new Date(this.engineerForm.get('dateOfBirth')?.value);
+      // this.engineerForm.patchValue({
+      //   dateOfBirth: `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`
+      // });
+      const dob = this.engineerForm.get('dateOfBirth')?.value;
+    const formattedDate = this.datePipe.transform(dob, 'yyyy-MM-dd');
+    this.engineerForm.patchValue({
+      dateOfBirth: formattedDate
+    });
   
       this.userService.addUser(this.engineerForm.value).pipe(
         tap(() => this.isSubmitted = true),
